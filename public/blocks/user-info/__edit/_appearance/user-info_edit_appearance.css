@@ -1,0 +1,13 @@
+.user-info_edit_appearance {
+    margin-top: 24px;
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    width: 38px;
+    height: 18px;
+    display: block;
+}
+
+.user-info_edit_appearance:focus {
+    outline-color: greenyellow;
+}

@@ -1,0 +1,9 @@
+.popup__photo {
+    max-width: 80vw;
+    max-height: 80vh;
+    width: auto;
+    height: 100%;
+    position: relative;
+    min-height: inherit;
+  }
+  

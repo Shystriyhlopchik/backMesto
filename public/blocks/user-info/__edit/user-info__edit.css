@@ -1,0 +1,13 @@
+@import url(./_appearance/user-info_edit_appearance.css);
+
+.user-info__edit{
+    font-size: 12px;
+    line-height: 15px;
+}
+
+@media screen and (max-width: 980px) {
+    .user-info__edit {
+      margin: 20px auto;
+      text-align: center;
+    }
+}

@@ -1,21 +1,17 @@
-//------Создание листа карточек и добавление новой-----
-'use strict'
-
-import NewElement from './newElement.js';
-
-export default class CardList extends NewElement {
+// Создание листа карточек и добавление новой
+class CardList extends NewElement {
     constructor(container, api) {
         super();
         this.container = container;
         this.api = api;
     }
 
-    //-------------добавление новой карточки------------
+    // добавление новой карточки
     addCard(item) {
         this.container.appendChild(this.initCallBack(item));
     }
 
-    //-----добавление в блок всех карточек из массива---
+    // добавление в блок всех карточек из массива
     renderList(path) {
         this.api
             .get(path)
@@ -25,7 +21,7 @@ export default class CardList extends NewElement {
                 })
             })
             .finally((data) => {
-                console.log(data);;
+                console.log(data);
             })
     }
 }

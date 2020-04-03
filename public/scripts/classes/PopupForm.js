@@ -1,9 +1,5 @@
 // Создание всплывающего окна с формами
-'use strict'
-
-import Popup from './popup.js';
-
-export default class PopupForm extends Popup {
+class PopupForm extends Popup {
     constructor(props, validation, api) {
         super();
         this._popupId = props.id;
@@ -20,9 +16,10 @@ export default class PopupForm extends Popup {
         this.path = props.path;
         this._validation = validation;
         this.api = api;
+
     }
 
-    //------------шаблон разметки всплывающего окна с формой-------------
+    // шаблон разметки всплывающего окна с формой
     get template() {
         return `
           <div class="popup" id="${this._popupId}">
@@ -40,8 +37,7 @@ export default class PopupForm extends Popup {
       </div> `.trim();
     }
 
-
-    //----------------------------открытие формы--------------------------
+    // открытие формы
     open() {
         super.open();
         if (this._popupId === 'new-card') {
@@ -59,13 +55,13 @@ export default class PopupForm extends Popup {
         }
     }
 
-    //-----------------------------закрытие формы--------------------------
+    // закрытие формы
     close() {
         super.close();
         this._validation.clearFields();
     }
 
-    //--------------------------отправка данных формы----------------------
+    // отправка данных формы
     submit(path, event) {
         event.preventDefault();
 
@@ -96,7 +92,7 @@ export default class PopupForm extends Popup {
         this.close();
     }
 
-    //--------------------установка слушателей ---------------------------
+    // установка слушателей 
     setEventList() {
         super.setEventList();
         this.getFormEl(this._buttonName)
@@ -109,7 +105,7 @@ export default class PopupForm extends Popup {
             });
     }
 
-    //-----------------------удаление слушаталей----------------------------
+    // удаление слушаталей
     removeEventList() {
         super.removeEventList();
         this.getFormEl(this._buttonName)

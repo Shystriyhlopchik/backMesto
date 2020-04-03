@@ -1,8 +1,5 @@
 // Получение и отрисовка данных пользователя
-'use strict'
-import NewElement from './newElement.js';
-
-export default class UserInfo extends NewElement {
+class UserInfo extends NewElement {
     constructor(container, api) {
       super();
       this.name = container.querySelector(".user-info__name");

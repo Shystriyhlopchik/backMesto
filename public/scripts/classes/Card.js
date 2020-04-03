@@ -1,8 +1,5 @@
 // Создание карточки
-'use strict'
-import NewElement from './newElement.js';
-
-export default class Card extends NewElement {
+class Card extends NewElement {
     constructor(props) {
         super();
         this._imageLink = props.link;
@@ -36,17 +33,18 @@ export default class Card extends NewElement {
         this.classList.toggle("place-card__like-icon_liked");
     }
 
-    //---------------------установка слушателей----------------
+    // установка слушателей
     setEventList() {
         this.element.querySelector('.place-card__delete-icon').addEventListener('click', this._remove);
         this.element.querySelector('.place-card__like-icon').addEventListener('click', this._like);
         this.element.querySelector('.place-card__image').addEventListener('click', this.initCallBack);
     }
 
-    //---------------------удаление слушателей----------------- 
+    // удаление слушателей 
     removeEventList() {
         this.element.querySelector('.place-card__delete-icon').removeEventListener('click', this._remove);
         this.element.querySelector('.place-card__like-icon').removeEventListener('click', this._like);
         this.element.querySelector('.place-card__image').removeEventListener('click', this.initCallBack);
     }
+
 }

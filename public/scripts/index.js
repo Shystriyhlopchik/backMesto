@@ -1,60 +1,53 @@
-    'use strict'
-    import './pages/index.css';
+/* 
 
-    import Api from './scripts/api.js';
-    import CardList from './scripts/cardlist.js';
-    import Card from './scripts/card.js';
-    import PopupForm from './scripts/popup_form.js';
-    import PopupImage from './scripts/popup_image.js';
-    import UserInfo from './scripts/user_info.js';
-    import Validation from './scripts/validation.js'
+Реализованные возможности:
+1) Загружать информацию о пользователе с сервера;
+2) Загрузка первоначальных карточек с сервера;
+3) Редактирование профиля;
+4) Добавление новой карточки;
+*/
 
-    // ---------------------------------- Свойства -----------------------------------------------------  //
-    // Окно с формой новой карточки
-    const newCardPopupProps = {
-        id: 'new-card',
-        title: 'Новое место',
-        formName: 'new',
-        firstFormFieldType: 'text',
-        firstFormFieldName: 'name',
-        secondFieldType: 'url',
-        secondFieldName: 'link',
-        firstFormFieldPlaceholder: 'Название',
-        secondFormFieldPlaceholder: 'Ссылка на картинку',
-        buttonName: 'submit',
-        buttonText: '+',
-        path: '/cards'
-    }
 
-    // Окно с формой редактирования профиля
-    const editProfilePopupProps = {
-        id: 'edit-profile',
-        title: 'Редактирование профиля',
-        formName: 'edit',
-        firstFormFieldType: 'text',
-        firstFormFieldName: 'username',
-        secondFieldType: 'text',
-        secondFieldName: 'userdesc',
-        firstFormFieldPlaceholder: 'Имя',
-        secondFormFieldPlaceholder: 'О себе',
-        buttonName: 'submit',
-        buttonText: 'Сохранить',
-        path: '/users/me'
-    }
+// ---------------------------------- Свойства -----------------------------------------------------  //
+// Окно с формой новой карточки
+const newCardPopupProps = {
+    id: 'new-card',
+    title: 'Новое место',
+    formName: 'new',
+    firstFormFieldType: 'text',
+    firstFormFieldName: 'name',
+    secondFieldType: 'url',
+    secondFieldName: 'link',
+    firstFormFieldPlaceholder: 'Название',
+    secondFormFieldPlaceholder: 'Ссылка на картинку',
+    buttonName: 'submit',
+    buttonText: '+',
+    path: '/cards'
+}
 
-    // Использование http/https в зависимости от режима сборки
-const serverUrl =
-NODE_ENV === "development"
-  ? "http://praktikum.tk/cohort7"
-  : "https://praktikum.tk/cohort7";
+// Окно с формой редактирования профиля
+const editProfilePopupProps = {
+    id: 'edit-profile',
+    title: 'Редактирование профиля',
+    formName: 'edit',
+    firstFormFieldType: 'text',
+    firstFormFieldName: 'username',
+    secondFieldType: 'text',
+    secondFieldName: 'userdesc',
+    firstFormFieldPlaceholder: 'Имя',
+    secondFormFieldPlaceholder: 'О себе',
+    buttonName: 'submit',
+    buttonText: 'Сохранить',
+    path: '/users/me'
+}
 
 // Свойства API
 const accessOptions = {
-  url: serverUrl,
-  headers: {
-      authorization: "6d082133-b0ad-4109-8c98-309babe766d7",
-      "Content-Type": "application/json"
-  }
+    url: "http://95.216.175.5/cohort7",
+    headers: {
+        authorization: "6d082133-b0ad-4109-8c98-309babe766d7",
+        "Content-Type": "application/json"
+    }
 }
 
 // ---------------------------------- Переменные -----------------------------------------------------  //
@@ -62,6 +55,8 @@ const accessOptions = {
 const addButton = document.querySelector(".user-info__button"); // кнопка открытия формы добавления карточки
 
 const editButton = document.querySelector(".user-info__edit-button"); // кнопка открытия редактирования профиля
+
+const rootContainer = document.querySelector(".root"); // main секция страницы
 
 const placesList = document.querySelector(".places-list"); // блок для карточек
 
@@ -106,6 +101,7 @@ const onLoad = () => {
     userInfo.getUserInfo("/users/me");
     cardListRender.renderList("/cards");
 }
+
 
 // ---------------------------------- Слушатели -----------------------------------------------------  //
 

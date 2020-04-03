@@ -1,21 +1,29 @@
-export default class Validation {
+class Validation {
 
     constructor() {
         this.firstFormField = null;
         this.secondFormField = null;
     }
 
-    //-------------проверка условий валидации-----------------
+    //проверка условий валидации
     isValid(elementToCheck) {
         const errorElement = document.querySelector(`#error-${elementToCheck.name}`);
+        // Можно лучше: обычно названия, для примера 'Должно быть от 2 до 30 символов' 
+        // выносят в отдельный объект. Допустим может появится задача сделать многоязычный сайт
+        // Для примера : const words = { validationLenght: 'Должно быть от 2 до 30 символов'	} 
+        // Далее words передаётся в функцию и используется.
         if (!elementToCheck.validity.valid) {
             if (
                 elementToCheck.value.length <=
-                    Number(elementToCheck.getAttribute("minlength")) ||
+                Number(elementToCheck.getAttribute("minlength")) ||
                 elementToCheck.value.length >=
-                    Number(elementToCheck.getAttribute("maxlength"))
+                Number(elementToCheck.getAttribute("maxlength"))
             ) {
                 if (elementToCheck.validity.valueMissing) {
+                    // Можно лучше: обычно названия, для примера 'Должно быть от 2 до 30 символов' 
+                    // выносят в отдельный объект. Допустим может появится задача сделать многоязычный сайт
+                    // Для примера : const words = { validationLenght: 'Должно быть от 2 до 30 символов'	} 
+                    // Далее words передаётся в функцию и используется.
                     errorElement.textContent = "Это обязательное поле";
                 } else {
                     errorElement.textContent = "Длина должна быть от 2 до 20 символов";
@@ -31,7 +39,7 @@ export default class Validation {
         }
     }
 
-    //-----проверка успеха валидации и контроль кнопки отправки данных----------
+    //проверка успеха валидации и контроль кнопки отправки данных
     formInputHandler(event) {
         const validRes = this.isValid(document
             .querySelector('form').elements[`${event.target.name}`]);
@@ -56,20 +64,20 @@ export default class Validation {
         }
     }
 
-    //-----очистка полей при отправке данных или закрытии формы ----
+    // очистка полей при отправке данных или закрытии формы 
     clearFields() {
         this.firstFormField = null;
         this.secondFormField = null;
     }
 
-    //----функция для отключения кнопки submit в обеих формах----
+    // функция для отключения кнопки submit в обеих формах
     disableButton() {
         const button = event.currentTarget.querySelector("button");
         button.setAttribute("disabled", true);
         button.classList.remove("popup__button_type_en");
     }
 
-    //----функция для включения кнопки submit в обеих формах----
+    // функция для включения кнопки submit в обеих формах
     enableButton() {
         const button = event.currentTarget.querySelector("button");
         button.removeAttribute("disabled");

@@ -1,13 +1,13 @@
 {
   "name": "yandexback",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "project backMesto",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "author": "Dimka Andreev",
+  "author": "Dimka Andreev <Shystriyhlopchik@yandex.ru>",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^6.8.0",

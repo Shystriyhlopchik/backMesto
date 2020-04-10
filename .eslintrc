@@ -1,3 +1,7 @@
 {
-  "extends": "airbnb-base"
+  "ignorePatterns": ["public/"],
+  "extends": "airbnb-base",
+  "rules": {
+    "no-underscore-dangle": 0
+  }
 }

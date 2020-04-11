@@ -8,7 +8,7 @@ const promise = new Promise ((resolve, reject) => {
   resolve(cardspath);
 });
 
-promise.then((pathCards) => {
+promise.then(pathCards => {
   return new Promise((resolve, reject) => {
     fs.readFile(pathCards, 'utf8', (err, data) => {
       // eslint-disable-next-line prefer-promise-reject-errors

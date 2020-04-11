@@ -7,7 +7,6 @@ const promise = new Promise ((resolve, reject) => {
   const cardspath = path.join(__dirname, '../data/cards.json');
   resolve(cardspath);
 });
-
 promise.then(pathCards => {
   return new Promise((resolve, reject) => {
     fs.readFile(pathCards, 'utf8', (err, data) => {

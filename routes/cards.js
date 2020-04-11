@@ -2,26 +2,31 @@ const productRouter = require('express').Router();
 const path = require('path');
 const fs = require('fs');
 
-const cardspath = path.join(__dirname, '../data/cards.json');
 
-fs.readFile(cardspath, 'utf8', (err, data) => {
-  if (err) {
-    console.log(err);
-    return;
-  }
-  try {
-    const cards = JSON.parse(data);
-
-    productRouter.get('/', (req, res) => {
-      res.send(cards);
-    });
-  } catch (e) {
-    console.log('Извините, произошла ошибка.');
-    console.log(e.name);
-    console.log(e.message);
-    console.log(e.stack);
-  }
+const promise = new Promise ((resolve, reject) => {
+  const cardspath = path.join(__dirname, '../data/cards.json');
+  resolve(cardspath);
 });
+
+promise.then((pathCards) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(pathCards, 'utf8', (err, data) => {
+      // eslint-disable-next-line prefer-promise-reject-errors
+      if (err) reject(`Ошибка чтения файла: ${pathCards}`);
+      else resolve(data);
+    });
+  });
+})
+  .then(data => {
+    const cards = JSON.parse(data);
+    return cards;
+  })
+  .then(data => {
+    productRouter.get('/', (req, res) => {
+      res.send(data);
+    });
+  })
+  .catch((err) => console.log('Error!!! \nПодробности: ', err));
 
 
 module.exports = productRouter;

@@ -2,12 +2,11 @@ const productRouter = require('express').Router();
 //const path = require('path');
 const mongoose = require('mongoose');
 
-const { createUser } = require('../controllers/users');
+const { createUser, getUsers, getUser } = require('../controllers/users');
 
-productRouter.post('/', (req, res)=> {
-  console.log(req.body);
-  createUser(req, res);
-});
+productRouter.post('/', createUser);
+productRouter.get('/', getUsers);
+productRouter.get('/:id', getUser);
 // const fs = require('fs');
 
 // const promise = new Promise((resolve, reject) => {

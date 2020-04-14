@@ -20,6 +20,13 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(express.static(path.join(__dirname, '/public')));
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '5e95ec235d8ecc043091212b'
+  };
+
+  next();
+});
 app.use('/', routes);
 
 app.listen(PORT, () => {

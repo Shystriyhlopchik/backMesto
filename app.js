@@ -14,7 +14,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 });
 
 
@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '5e95ec235d8ecc043091212b'
+    _id: '5e95ec235d8ecc043091212b',
   };
 
   next();
@@ -30,6 +30,5 @@ app.use((req, res, next) => {
 app.use('/', routes);
 
 app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
   console.log(`App listening on port ${PORT}`);
 });

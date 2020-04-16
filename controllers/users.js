@@ -19,10 +19,10 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUser = (req, res) => {
   User.findById(req.params.id)
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка при попытке найти пользователя с указанным id' }));
+    .catch(() => res.status(404).send({ message: 'Запрошенный пользователь не найден' }));
 };
 
-//
+// смена автатарки пользователя
 module.exports.patchAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
@@ -30,6 +30,7 @@ module.exports.patchAvatar = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Произошла ошибка при попытке обновлении фотографии пользователя' }));
 };
 
+// обновление иформации о пользователе
 module.exports.patchMe = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })

@@ -48,6 +48,7 @@ module.exports.patchMe = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Произошла ошибка при попытке обновить информацию пользователя' }));
 };
 
+// проверка пользователя
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 

@@ -23,6 +23,17 @@ const userSchema = new mongoose.Schema({
       },
     },
   },
+  email: {
+    type: String,
+    required: true,
+    validate: (email) => {
+      validator.isEmail(email);
+    },
+  },
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('user', userSchema);

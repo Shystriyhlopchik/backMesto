@@ -23,12 +23,6 @@ app.use(auth);
 app.post('/signin', login);
 app.post('/signup', createUser);
 app.use(express.static(path.join(__dirname, '/public')));
-app.use((req, res, next) => {
-  req.user = {
-    _id: '5e95ec235d8ecc043091212b',
-  };
-  next();
-});
 app.use('/', routes);
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console

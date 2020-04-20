@@ -5,17 +5,18 @@ const User = require('../models/user');
 // внесение нового пользователя в БД
 module.exports.createUser = (req, res) => {
   const {
-    name, about, avatar, email,
+    name, about, avatar, email, password,
   } = req.body;
-
-  bcrypt.hash(req.body.password, 10)
+  bcrypt.hash(password, 8)
     .then((hash) => {
-      User.create({
-        name, about, avatar, email, hash,
+      return User.create({
+        name, about, avatar, email, password: hash,
       });
     })
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка при попытке записи нового пользователя' }));
+    .then((user) => res.status(201).send({
+      _id: user._id, email: user.email, message: 'Пользователь создан успешно',
+    }))
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 // получение всех пользователей из БД
@@ -59,7 +60,11 @@ module.exports.login = (req, res) => {
         'some-secret-key',
         { expiresIn: '7d' },
       );
-      res.send({ token });
+      res.cookie('jwt', { token }, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: true,
+      });
     })
     .catch((err) => {
       res

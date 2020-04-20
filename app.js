@@ -19,9 +19,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
-app.use(auth);
 app.post('/signin', login);
 app.post('/signup', createUser);
+app.use(auth);
 app.use(express.static(path.join(__dirname, '/public')));
 app.use('/', routes);
 app.listen(PORT, () => {

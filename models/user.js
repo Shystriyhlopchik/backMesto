@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: (email) => {
       if (!validator.isEmail(email)) {
-        console.log('Ошибка валлидации почты');
+        throw new Error('Ошибка валлидации');
       }
     },
   },
@@ -42,27 +42,22 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// eslint-disable-next-line func-names
-userSchema.static.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }).select(+password)
+
+userSchema.statics.findUserByCredentials = function (email, password, next) {
+  return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
+        return Promise.reject(new Error('Неправильные почта или пароль.'));
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new Error('Неправильные почта или пароль'));
+            return Promise.reject(new Error('Неправильные почта или пароль.'));
           }
           return user;
         });
     })
-    .catch((err) => {
-      // eslint-disable-next-line no-undef
-      res
-        .status(401)
-        .send({ message: err.message });
-    });
+    .catch(next);
 };
 
 module.exports = mongoose.model('user', userSchema);

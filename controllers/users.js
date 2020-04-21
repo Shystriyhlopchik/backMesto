@@ -8,15 +8,13 @@ module.exports.createUser = (req, res) => {
     name, about, avatar, email, password,
   } = req.body;
   bcrypt.hash(password, 8)
-    .then((hash) => {
-      return User.create({
-        name, about, avatar, email, password: hash,
-      });
-    })
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => res.status(201).send({
       _id: user._id, email: user.email, message: 'Пользователь создан успешно',
     }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => res.status(409).send({ message: err.message }));
 };
 
 // получение всех пользователей из БД
@@ -52,23 +50,23 @@ module.exports.patchMe = (req, res) => {
 // проверка пользователя
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
-
-  return User.findUserByCredentials({ email, password })
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
         'some-secret-key',
         { expiresIn: '7d' },
       );
-      res.cookie('jwt', { token }, {
+      res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
         sameSite: true,
       });
+      res.send(token);
     })
     .catch((err) => {
       res
         .status(401)
-        .send({ message: err.message });
+        .send({ message: err.stack });
     });
 };

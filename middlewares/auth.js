@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
   if (!autorization || !autorization.startsWith('Bearer ')) {
     return res
       .status(401)
-      .send({ message: 'необходима авторизация dfd' });
+      .send({ message: 'Необходимая авторицация' });
   }
   const token = autorization.replace('Bearer ', '');
   let payload;

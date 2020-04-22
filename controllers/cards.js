@@ -18,7 +18,9 @@ module.exports.getCards = (req, res) => {
 // удаление карточки из БД по id
 module.exports.deleteCard = (req, res) => {
   Card.findOneAndRemove(req.params.id)
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if(card)
+    }res.send({ data: card }))
     .catch(() => res.status(404).send({ message: 'Карточка с указанным id не найдена' }));
 };
 

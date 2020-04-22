@@ -22,7 +22,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.post('/signin', login);
 app.post('/signup', createUser);
 app.use(auth);
-app.use(express.static(path.join(__dirname, '/public')));
 app.use('/', routes);
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console

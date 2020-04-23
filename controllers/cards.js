@@ -16,12 +16,17 @@ module.exports.getCards = (req, res) => {
 };
 
 // удаление карточки из БД по id
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findOneAndRemove(req.params.id)
     .then((card) => {
-      if(card)
-    }res.send({ data: card }))
-    .catch(() => res.status(404).send({ message: 'Карточка с указанным id не найдена' }));
+      if (card.owner._id.toString() !== req.user._id) {
+        throw new Error('ошибка');
+      }
+      return Card.findByIdAndDelete(req.params.id)
+        .then(() => res.send({ data: card }))
+        .catch(next);
+    })
+    .catch(next);
 };
 
 // проставление лайка

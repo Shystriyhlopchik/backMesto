@@ -20,13 +20,19 @@ module.exports.deleteCard = (req, res, next) => {
   Card.findOneAndRemove(req.params.id)
     .then((card) => {
       if (card.owner._id.toString() !== req.user._id) {
-        throw new Error('ошибка');
+        const err = new Error('не найдено');
+        err.statusCode = 404;
+        next(err);
       }
       return Card.findByIdAndDelete(req.params.id)
         .then(() => res.send({ data: card }))
         .catch(next);
     })
-    .catch(next);
+    .catch(() => {
+      const err = new Error('не найдено');// если карта не найдена
+      err.statusCode = 404;
+      next(err);
+    });
 };
 
 // проставление лайка

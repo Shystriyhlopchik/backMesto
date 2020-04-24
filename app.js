@@ -24,7 +24,7 @@ app.post('/signup', createUser);
 app.use(helmet());
 app.use(auth);
 app.use('/', routes);
-app.use((err, res) => { // Общая обработка ошибок
+app.use((err, req, res) => { // Общая обработка ошибок
   if (!err.statusCode) {
     res
       .status(500)

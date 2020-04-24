@@ -3,20 +3,20 @@ const jwt = require('jsonwebtoken');
 
 // eslint-disable-next-line consistent-return
 module.exports = (req, res, next) => {
-  const { autorization } = req.headers;
-  if (!autorization || !autorization.startsWith('Bearer ')) {
-    return res
-      .status(401)
-      .send({ message: 'Необходимая авторицация' });
+  const { authorization } = req.headers;
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    const err = new Error('Необходима авторицация');
+    err.statusCode = 401;
+    next(err);
   }
-  const token = autorization.replace('Bearer ', '');
+  const token = authorization.replace('Bearer ', '');
   let payload;
   try {
     payload = jwt.verify(token, 'some-secret-key');
-  } catch (err) {
-    return res
-      .status(401)
-      .send({ message: 'Необходимая авторицация' });
+  } catch (e) {
+    const err = new Error('Необходима авторицация');
+    err.statusCode = 401;
+    next(err);
   }
   req.user = payload;
   next();

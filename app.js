@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 const routes = require('./routes/routes.js');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
@@ -20,8 +21,20 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.post('/signin', login);
 app.post('/signup', createUser);
+app.use(helmet());
 app.use(auth);
 app.use('/', routes);
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => { // Общая обработка ошибок
+  if (!err.statusCode) {
+    res
+      .status(500)
+      .send({ message: 'Internal Server Error' });
+  }
+  res
+    .status(`${err.statusCode}`)
+    .send({ message: err.message });
+});
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`App listening on port ${PORT}`);

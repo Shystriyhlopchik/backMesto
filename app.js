@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 const routes = require('./routes/routes.js');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
@@ -20,9 +21,15 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.post('/signin', login);
 app.post('/signup', createUser);
+app.use(helmet());
 app.use(auth);
 app.use('/', routes);
-app.use(( err, req, res, next ) => {
+app.use((err, req, res, next ) => { // Общая обработка ошибок
+  if (!err.statusCode) {
+    res
+      .status(500)
+      .send({ message: 'Internal Server Error' });
+  }
   res
     .status(`${err.statusCode}`)
     .send({ message: err.message });

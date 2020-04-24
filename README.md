@@ -1,7 +1,7 @@
 # backMesto
 ## RU
 
-_v2.8.5 - Карта удаляется только создателем._
+_v2.9.0 - Переписаны контроллеры._
 
 backMesto &mdash; создание сервера для проекта Mesto, созданный в рамках спринта 12 учебной программы [Яндекс.Практикума](https://praktikum.yandex.ru/profile/web-developer/).
 Разработан API для реализации процесса аутентификации с помощью JWT.
@@ -37,6 +37,7 @@ $> npm run start
 + Node.js
 + Express.js
 + JWT
++ MongoDB
 .
 
 

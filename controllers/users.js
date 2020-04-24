@@ -3,48 +3,72 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 // внесение нового пользователя в БД
-module.exports.createUser = (req, res) => {
-  const {
-    name, about, avatar, email, password,
-  } = req.body;
-  bcrypt.hash(password, 8)
-    .then((hash) => User.create({
+module.exports.createUser = async (req, res, next) => {
+  try {
+    const {
+      name, about, avatar, email, password,
+    } = req.body;
+    const hash = await bcrypt.hash(password, 10);
+    const user = await User.create({
       name, about, avatar, email, password: hash,
-    }))
-    .then((user) => res.status(201).send({
-      _id: user._id, email: user.email, message: 'Пользователь создан успешно',
-    }))
-    .catch((err) => res.status(409).send({ message: err.message }));
+    });
+    res.status(201).send({ data: user });
+  } catch (e) {
+    const err = new Error('409 Conflict');
+    err.statusCode = 409;
+    next(err);
+  }
 };
 
 // получение всех пользователей из БД
-module.exports.getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка при попытке получить список всех пользователей' }));
+module.exports.getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({});
+    res.status(200).send({ data: users });
+  } catch (e) {
+    next(e);
+  }
 };
 
 // получение данных пользователя по запрошенному id
-module.exports.getUser = (req, res) => {
-  User.findById(req.params.id)
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(404).send({ message: 'Запрошенный пользователь не найден' }));
+module.exports.getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      const err = new Error('404 Not found');
+      err.statusCode = 404;
+      throw err;
+    }
+    res.send({ data: user }).status(200);
+  } catch (e) {
+    next(e);
+  }
 };
 
 // смена автатарки пользователя
-module.exports.patchAvatar = (req, res) => {
-  const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка при попытке обновлении фотографии пользователя' }));
+module.exports.patchAvatar = async (req, res, next) => {
+  try {
+    const { avatar } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.user._id, { avatar }, { new: true, runValidators: true },
+    );
+    res.send({ data: user }).status(200);
+  } catch (e) {
+    next(e);
+  }
 };
 
 // обновление иформации о пользователе
-module.exports.patchMe = (req, res) => {
-  const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка при попытке обновить информацию пользователя' }));
+module.exports.patchMe = async (req, res, next) => {
+  try {
+    const { name, about } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.user._id, { name, about }, { new: true, runValidators: true },
+    );
+    res.send({ data: user }).status(200);
+  } catch (e) {
+    next(e);
+  }
 };
 
 // проверка пользователя

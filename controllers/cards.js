@@ -22,6 +22,7 @@ module.exports.getCards = async (req, res, next) => {
 };
 
 // удаление карточки из БД по id
+// eslint-disable-next-line consistent-return
 module.exports.deleteCard = async (req, res, next) => {
   try {
     const card = await Card.findById(req.params.id);
@@ -31,7 +32,7 @@ module.exports.deleteCard = async (req, res, next) => {
       return next(err);
     }
     const cardDelete = await Card.findOneAndRemove(req.params.id);
-    return res.status(200).send({ message: 'card deleted:', data: cardDelete })
+    return res.status(200).send({ message: 'card deleted:', data: cardDelete });
   } catch (e) {
     const err = new Error('404 Not Found');
     err.statusCode = 404;

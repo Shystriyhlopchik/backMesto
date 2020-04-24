@@ -24,7 +24,8 @@ app.post('/signup', createUser);
 app.use(helmet());
 app.use(auth);
 app.use('/', routes);
-app.use((err, req, res) => { // Общая обработка ошибок
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => { // Общая обработка ошибок
   if (!err.statusCode) {
     res
       .status(500)

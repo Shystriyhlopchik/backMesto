@@ -1,38 +1,42 @@
 const Card = require('../models/card');
 
 // добавление новой крточки в БД
-module.exports.createCard = (req, res) => {
-  const { name, link } = req.body;
-  Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка при создании карточки' }));
+module.exports.createCard = async (req, res, next) => {
+  try {
+    const { name, link } = req.body;
+    const card = await Card.create({ name, link, owner: req.user._id });
+    res.send({ data: card }).status(200);
+  } catch (e) {
+    next(e);
+  }
 };
 
 // получение всех карточек из БД
-module.exports.getCards = (req, res) => {
-  Card.find({})
-    .then((cards) => res.send({ data: cards }))
-    .catch(() => res.status(500).send({ message: 'Произощла ошибка при попытку получить карточки' }));
+module.exports.getCards = async (req, res, next) => {
+  try {
+    const cards = await Card.find({});
+    res.send({ data: cards }).status(200);
+  } catch (e) {
+    next(e);
+  }
 };
 
 // удаление карточки из БД по id
-module.exports.deleteCard = (req, res, next) => {
-  Card.findOneAndRemove(req.params.id)
-    .then((card) => {
-      if (card.owner._id.toString() !== req.user._id) {
-        const err = new Error('не найдено');
-        err.statusCode = 404;
-        next(err);
-      }
-      return Card.findByIdAndDelete(req.params.id)
-        .then(() => res.send({ data: card }))
-        .catch(next);
-    })
-    .catch(() => {
-      const err = new Error('не найдено');// если карта не найдена
+module.exports.deleteCard = async (req, res, next) => {
+  try {
+    const card = await Card.findById(req.params.id);
+    if (card.owner._id.toString() !== req.user._id) {
+      const err = new Error('404 Not Found');
       err.statusCode = 404;
-      next(err);
-    });
+      return next(err);
+    }
+    const cardDelete = await Card.findOneAndRemove(req.params.id);
+    return res.status(200).send({ message: 'card deleted:', data: cardDelete })
+  } catch (e) {
+    const err = new Error('404 Not Found');
+    err.statusCode = 404;
+    next(err);
+  }
 };
 
 // проставление лайка

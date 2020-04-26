@@ -1,6 +1,6 @@
 {
   "name": "yandexback",
-  "version": "2.10.0",
+  "version": "2.11.3",
   "description": "project backMesto",
   "main": "app.js",
   "scripts": {

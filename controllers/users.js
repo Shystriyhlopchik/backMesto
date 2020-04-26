@@ -3,8 +3,10 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const ConflictError = require('../errors/conflict-err');
+const UnathtorizedError = require('../errors/unauthorized-err');
 
 // внесение нового пользователя в БД
+// eslint-disable-next-line consistent-return
 module.exports.createUser = async (req, res, next) => {
   try {
     const {
@@ -70,25 +72,45 @@ module.exports.patchMe = async (req, res, next) => {
 };
 
 // проверка пользователя
-module.exports.login = (req, res) => {
-  const { email, password } = req.body;
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        'some-secret-key',
-        { expiresIn: '7d' },
-      );
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-        sameSite: true,
-      });
-      res.send(token);
-    })
-    .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.stack });
+// module.exports.login = (req, res) => {
+//   const { email, password } = req.body;
+//   return User.findUserByCredentials(email, password)
+//     .then((user) => {
+//       const token = jwt.sign(
+//         { _id: user._id },
+//         'some-secret-key',
+//         { expiresIn: '7d' },
+//       );
+//       res.cookie('jwt', token, {
+//         maxAge: 3600000 * 24 * 7,
+//         httpOnly: true,
+//         sameSite: true,
+//       });
+//       res.status(200).send(token);
+//     })
+//     .catch((err) => {
+//       res
+//         .status(401)
+//         .send({ message: err.stack });
+//     });
+// };
+
+module.exports.login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findUserByCredentials(email, password);
+    const token = jwt.sign(
+      { _id: user._id },
+      'some-secret-key',
+      { expiresIn: '7d' },
+    );
+    res.cookie('jwt', token, {
+      maxAge: 3600000 * 24 * 7,
+      httpOnly: true,
+      sameSite: true,
     });
+    res.status(200).send(token);
+  } catch (err) {
+    next(new UnathtorizedError(err.message));
+  }
 };

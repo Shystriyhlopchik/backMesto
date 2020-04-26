@@ -1,8 +1,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const NotFoundError = require('../errors/not-found-err');
+const ConflictError = require('../errors/conflict-err');
+const UnathtorizedError = require('../errors/unauthorized-err');
 
 // внесение нового пользователя в БД
+// eslint-disable-next-line consistent-return
 module.exports.createUser = async (req, res, next) => {
   try {
     const {
@@ -14,9 +18,7 @@ module.exports.createUser = async (req, res, next) => {
     });
     res.status(201).send({ data: user });
   } catch (e) {
-    const err = new Error('409 Conflict');
-    err.statusCode = 409;
-    next(err);
+    return next(new ConflictError('409 Conflict'));
   }
 };
 
@@ -35,9 +37,7 @@ module.exports.getUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
-      const err = new Error('404 Not found');
-      err.statusCode = 404;
-      throw err;
+      throw new NotFoundError('404 Not found');
     }
     res.send({ data: user }).status(200);
   } catch (e) {
@@ -72,25 +72,45 @@ module.exports.patchMe = async (req, res, next) => {
 };
 
 // проверка пользователя
-module.exports.login = (req, res) => {
-  const { email, password } = req.body;
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        'some-secret-key',
-        { expiresIn: '7d' },
-      );
-      res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-        sameSite: true,
-      });
-      res.send(token);
-    })
-    .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.stack });
+// module.exports.login = (req, res) => {
+//   const { email, password } = req.body;
+//   return User.findUserByCredentials(email, password)
+//     .then((user) => {
+//       const token = jwt.sign(
+//         { _id: user._id },
+//         'some-secret-key',
+//         { expiresIn: '7d' },
+//       );
+//       res.cookie('jwt', token, {
+//         maxAge: 3600000 * 24 * 7,
+//         httpOnly: true,
+//         sameSite: true,
+//       });
+//       res.status(200).send(token);
+//     })
+//     .catch((err) => {
+//       res
+//         .status(401)
+//         .send({ message: err.stack });
+//     });
+// };
+
+module.exports.login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findUserByCredentials(email, password);
+    const token = jwt.sign(
+      { _id: user._id },
+      'some-secret-key',
+      { expiresIn: '7d' },
+    );
+    res.cookie('jwt', token, {
+      maxAge: 3600000 * 24 * 7,
+      httpOnly: true,
+      sameSite: true,
     });
+    res.status(200).send(token);
+  } catch (err) {
+    next(new UnathtorizedError(err.message));
+  }
 };

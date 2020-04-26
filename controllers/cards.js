@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const { NotFoundError } = require('../errors/not-found-err');
 
 // добавление новой крточки в БД
 module.exports.createCard = async (req, res, next) => {
@@ -27,16 +28,12 @@ module.exports.deleteCard = async (req, res, next) => {
   try {
     const card = await Card.findById(req.params.id);
     if (card.owner._id.toString() !== req.user._id) {
-      const err = new Error('404 Not Found');
-      err.statusCode = 404;
-      return next(err);
+      throw new NotFoundError('404 Not Found');
     }
     const cardDelete = await Card.findOneAndRemove(req.params.id);
     return res.status(200).send({ message: 'card deleted:', data: cardDelete });
-  } catch (e) {
-    const err = new Error('404 Not Found');
-    err.statusCode = 404;
-    next(err);
+  } catch (err) {
+    return next(err);
   }
 };
 

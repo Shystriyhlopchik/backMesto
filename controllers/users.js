@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const NotFoundError = require('../errors/not-found-err');
+const ConflictError = require('../errors/conflict-err');
 
 // внесение нового пользователя в БД
 module.exports.createUser = async (req, res, next) => {
@@ -14,9 +16,7 @@ module.exports.createUser = async (req, res, next) => {
     });
     res.status(201).send({ data: user });
   } catch (e) {
-    const err = new Error('409 Conflict');
-    err.statusCode = 409;
-    next(err);
+    return next(new ConflictError('409 Conflict'));
   }
 };
 
@@ -35,9 +35,7 @@ module.exports.getUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
-      const err = new Error('404 Not found');
-      err.statusCode = 404;
-      throw err;
+      throw new NotFoundError('404 Not found');
     }
     res.send({ data: user }).status(200);
   } catch (e) {

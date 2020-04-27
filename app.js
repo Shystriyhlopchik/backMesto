@@ -7,10 +7,10 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 
 const routes = require('./routes/routes.js');
-const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const error = require('./middlewares/error');
 const settings = require('./appconfig');
+const { login, createUser } = require('./controllers/users');
 const { userValidator, loginValidator } = require('./middlewares/validation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 

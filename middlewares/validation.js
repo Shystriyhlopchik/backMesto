@@ -72,3 +72,11 @@ module.exports.cardValidator = celebrate({
       .error(errorsMessage.link),
   }),
 });
+
+// валидация id
+module.exports.mongooseObjectIdValidator = celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().required().length(24).hex()
+      .error(errorsMessage.id),
+  }),
+});

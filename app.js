@@ -10,10 +10,12 @@ const routes = require('./routes/routes.js');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const error = require('./middlewares/error');
+const settings = require('./appconfig');
 const { userValidator, loginValidator } = require('./middlewares/validation');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 3000 } = process.env;
+
+const port = settings.PORT;
 const app = express();
 
 app.use(bodyParser.json());
@@ -46,7 +48,7 @@ app.use(errorLogger); // подключаем логгер ошибок
 app.use(errors()); // обработчик ошибок celebrate
 
 app.use(error);
-app.listen(PORT, () => {
+app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`App listening on port ${PORT}`);
+  console.log(`App listening on port ${port}`);
 });

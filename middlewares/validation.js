@@ -8,7 +8,7 @@ const errorsMessage = {
   about: new BadRequestError('"about" не соответствует формату'),
   name: new BadRequestError('Длина имени не должна превышать 30 символов и быть не короче 2 символов'),
   avatar: new BadRequestError('Ошибка в поле "avatar". URL не соответствует формату.'),
-  email: new BadRequestError('Ошибка. Введенная почта не соответствует формату: "ya@mai.ru"'),
+  email: new BadRequestError('Строка, обязательное поле, должно соответствовать паттерну почты'),
   password: new BadRequestError('Пароль должен состоять не менее чем из 8 символов(максмум 24).'),
   link: new BadRequestError('Ошибка URL'),
   id: new BadRequestError('Ошибка типа'),
@@ -37,9 +37,9 @@ module.exports.userValidator = celebrate({
 module.exports.loginValidator = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email()
-      .error(errorsMessage.email),
+      .error(errorsMessage.login),
     password: Joi.string().required().min(8)
-      .error(errorsMessage.password),
+      .error(errorsMessage.login),
   }),
 });
 
@@ -70,13 +70,5 @@ module.exports.cardValidator = celebrate({
     link: Joi.string().required()
       .regex(/^(https?):\/\/(w{3}\.)?(?!www)(([А-ЯЁа-яёA-Za-z0-9_-]+\.[А-ЯЁа-яёA-Za-z0-9_-]+(\.[А-ЯЁа-яёA-Za-z_-]+){0,2})|(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))(:\d{2,5})?(\/[A-Za-z0-9/\-_.#:?&~/]*)?$/)
       .error(errorsMessage.link),
-  }),
-});
-
-//
-module.exports.mongooseObjectIdValidator = celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().required().length(24).hex()
-      .error(errorsMessage.id),
   }),
 });

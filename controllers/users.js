@@ -90,13 +90,13 @@ module.exports.login = async (req, res, next) => {
       JWT_SECRET,
       { expiresIn: '7d' },
     );
-    res.cookie('jwt', token, JWT_SECRET, {
+    res.cookie('jwt', token, {
       maxAge: 3600000 * 24 * 7,
       httpOnly: true,
       secure: true,
       sameSite: true,
     });
-    res.status(200).send({ data: token });
+    res.status(200).send({ token });
   } catch (err) {
     next(new UnathtorizedError(err.message));
   }

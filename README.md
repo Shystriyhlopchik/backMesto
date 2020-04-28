@@ -1,7 +1,7 @@
 # backMesto
 ## RU
 
-_v3.1.1 - Верификация JWT._
+_v3.1.2 - Верификация JWT._
 
 backMesto &mdash; создание бекенда для проекта Mesto, созданный в рамках спринтов 13-15 учебной программы [Яндекс.Практикума](https://praktikum.yandex.ru/profile/web-developer/). В качестве БД используется MongoDB.
 

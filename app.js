@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
+const cookieParser = require('cookie-parser');
 
 const routes = require('./routes/routes.js');
 const auth = require('./middlewares/auth');
@@ -23,7 +24,7 @@ app.use(helmet()); // док: https://www.npmjs.com/package/helmet
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger); // логгер запросов
-
+app.use(cookieParser());
 // подключение к БД
 mongooseConnect();
 

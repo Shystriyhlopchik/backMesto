@@ -49,7 +49,7 @@ module.exports.likeCard = (async (req, res, next) => {
     const { id } = req.params;
     const card = await Card.findById(id);
     if (!card) {
-      return next(new NotFoundError('Not found'));
+      return next(new NotFoundError('404 Not found'));
     }
     const cardToUpdate = await Card.findByIdAndUpdate(id, {
       $addToSet: { likes: req.user._id },
@@ -59,7 +59,7 @@ module.exports.likeCard = (async (req, res, next) => {
     return res.status(200).send({ data: cardToUpdate });
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
-      return next(new NotFoundError('Not Found'));
+      return next(new NotFoundError('404 Not Found'));
     }
     return next(err); // passes the data to errorHandler middleware
   }
@@ -70,7 +70,7 @@ module.exports.dislikeCard = (async (req, res, next) => {
   try {
     const card = await Card.findById(req.params.id);
     if (!card) {
-      return next(new NotFoundError('Not Found'));
+      return next(new NotFoundError('404 Not Found'));
     }
     const cardToDislike = await Card.findByIdAndUpdate(req.params.id, {
       $pull: { likes: req.user._id },
@@ -80,7 +80,7 @@ module.exports.dislikeCard = (async (req, res, next) => {
     return res.status(200).send({ message: 'like removed:', data: cardToDislike });
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
-      return next(new NotFoundError('Not Found'));
+      return next(new NotFoundError('404 Not Found'));
     }
     return next(err);
   }

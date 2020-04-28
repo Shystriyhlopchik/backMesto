@@ -28,10 +28,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    validate: (email) => {
-      if (!validator.isEmail(email)) {
-        throw new Error('Ошибка валлидации');
-      }
+    validate: {
+      validator: (value) => validator.isEmail(value),
+      message: 'Ошибка валидации email',
     },
   },
   password: {

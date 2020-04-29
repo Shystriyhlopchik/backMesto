@@ -59,7 +59,7 @@ module.exports.likeCard = (async (req, res, next) => {
     return res.status(200).send({ data: cardToUpdate });
   } catch (err) {
     if (err instanceof mongoose.Error.CastError) {
-      return next(new NotFoundError('404 Not Found'));
+      return next(new NotFoundError('404 Not Foundfdfdfd'));
     }
     return next(err); // passes the data to errorHandler middleware
   }

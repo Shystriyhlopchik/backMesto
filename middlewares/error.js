@@ -8,4 +8,5 @@ module.exports = (err, req, res, next) => { // Общая обработка о�
       message,
     },
   });
+  // res.send(err);
 };

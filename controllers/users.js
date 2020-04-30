@@ -4,10 +4,11 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const ConflictError = require('../errors/conflict-err');
 const UnathtorizedError = require('../errors/unauthorized-err');
+const { JWT_SECRET } = require('../appconfig');
 
 // внесение нового пользователя в БД
 // eslint-disable-next-line consistent-return
-module.exports.createUser = async (req, res, next) => {
+module.exports.createUser = (async (req, res, next) => {
   try {
     const {
       name, about, avatar, email, password,
@@ -16,24 +17,35 @@ module.exports.createUser = async (req, res, next) => {
     const user = await User.create({
       name, about, avatar, email, password: hash,
     });
-    res.status(201).send({ data: user });
+    res.status(201).send({
+      data: {
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      },
+    });
   } catch (e) {
-    return next(new ConflictError('409 Conflict'));
+    if (e.keyValue.email) {
+      next(new ConflictError('409 Conflict'));
+    }
+    return next(e);
   }
-};
+});
 
 // получение всех пользователей из БД
-module.exports.getUsers = async (req, res, next) => {
+module.exports.getUsers = (async (req, res, next) => {
   try {
     const users = await User.find({});
     res.status(200).send({ data: users });
   } catch (e) {
     next(e);
   }
-};
+});
 
 // получение данных пользователя по запрошенному id
-module.exports.getUser = async (req, res, next) => {
+module.exports.getUser = (async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -43,10 +55,10 @@ module.exports.getUser = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+});
 
 // смена автатарки пользователя
-module.exports.patchAvatar = async (req, res, next) => {
+module.exports.patchAvatar = (async (req, res, next) => {
   try {
     const { avatar } = req.body;
     const user = await User.findByIdAndUpdate(
@@ -56,10 +68,10 @@ module.exports.patchAvatar = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+});
 
 // обновление иформации о пользователе
-module.exports.patchMe = async (req, res, next) => {
+module.exports.patchMe = (async (req, res, next) => {
   try {
     const { name, about } = req.body;
     const user = await User.findByIdAndUpdate(
@@ -69,48 +81,27 @@ module.exports.patchMe = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
-};
+});
 
-// проверка пользователя
-// module.exports.login = (req, res) => {
-//   const { email, password } = req.body;
-//   return User.findUserByCredentials(email, password)
-//     .then((user) => {
-//       const token = jwt.sign(
-//         { _id: user._id },
-//         'some-secret-key',
-//         { expiresIn: '7d' },
-//       );
-//       res.cookie('jwt', token, {
-//         maxAge: 3600000 * 24 * 7,
-//         httpOnly: true,
-//         sameSite: true,
-//       });
-//       res.status(200).send(token);
-//     })
-//     .catch((err) => {
-//       res
-//         .status(401)
-//         .send({ message: err.stack });
-//     });
-// };
-
-module.exports.login = async (req, res, next) => {
+// Логировние
+module.exports.login = (async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findUserByCredentials(email, password);
-    const token = jwt.sign(
+    const token = await jwt.sign(
       { _id: user._id },
-      'some-secret-key',
+      JWT_SECRET,
       { expiresIn: '7d' },
     );
-    res.cookie('jwt', token, {
-      maxAge: 3600000 * 24 * 7,
-      httpOnly: true,
-      sameSite: true,
-    });
-    res.status(200).send(token);
+    res.cookie('jwt', token, JWT_SECRET)
+      .cookie({
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        secure: true,
+        sameSite: true,
+      });
+    res.status(200).send({ token });
   } catch (err) {
     next(new UnathtorizedError(err.message));
   }
-};
+});

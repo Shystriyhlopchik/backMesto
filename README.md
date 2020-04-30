@@ -6,10 +6,10 @@ _v3.1.2 - Верификация JWT._
 backMesto &mdash; создание бекенда для проекта Mesto, созданный в рамках спринтов 13-15 учебной программы [Яндекс.Практикума](https://praktikum.yandex.ru/profile/web-developer/). В качестве БД используется MongoDB.
 
 ### домен
-  [appmesto.website](https://appmesto.website/)
+  [appbackmesto.xyz](https://appbackmesto.xyz/)
 
 ### ip сервера
-    130.193.50.204
+    130.193.50.157
 
 ### Возможности сервера
 1. Зарегистрировать нового пользователя: POST http://localhost:3000/signup 
